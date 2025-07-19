@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log In - Savory Bites</title>
+    <title>Sign Up - Savory Bites</title>
     <style>
         :root {
             --primary: #d63031;
@@ -79,21 +79,70 @@
             color: var(--primary);
             text-decoration: none;
         }
+
+        .error {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Welcome Back</h2>
+        <h2>Login to Your Account</h2>
         <form>
             <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
             <button class="btn" type="submit">Log In</button>
         </form>
         <div class="link">
-            Don't have an account? <a href="signup.html">Sign Up</a>
+            Don't have an account? <a href="index.html">Sign Up</a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            form.insertBefore(errorDiv, form.firstChild);
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const name = form.elements[0].value;
+                const email = form.elements[1].value;
+                const phone = form.elements[2].value;
+                const password = form.elements[3].value;
+
+                // Simple validation
+                if (!name || !email || !phone || !password) {
+                    errorDiv.textContent = 'Please fill in all fields';
+                    return;
+                }
+
+                // Check if user already exists
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const existingUser = users.find(u => u.email === email);
+
+                if (existingUser) {
+                    errorDiv.textContent = 'Email already registered';
+                    return;
+                }
+
+                // Create new user
+                const newUser = { name, email, phone, password };
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+
+                // Store logged in user and redirect
+                localStorage.setItem('currentUser', JSON.stringify(newUser));
+                window.location.href = 'profile.html';
+            });
+        });
+    </script>
 </body>
 
 </html>
